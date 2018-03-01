@@ -6,11 +6,16 @@ import submission.Assignment;
 import submission.Submission;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Evaluation {
 
+    public static Set<Ride> visited = new HashSet<>();
+
     public static int getTotalReward(int bonus, Submission sub) {
+        visited.clear();
         int total_reward = 0;
         long start_time = 0;
         long end_time = 0;
@@ -22,7 +27,7 @@ public class Evaluation {
         return total_reward;
     }
 
-    public static long reward(int bonus, List<Ride> rides) {
+    public static long reward(int bonus, List<Ride> rides){
         long start_time;
         long end_time;
         int applied_bonus;
@@ -30,6 +35,8 @@ public class Evaluation {
         long total_reward = 0;
         Point current_point = new Point(0, 0);
         for (Ride ride : rides) {
+            assert !visited.contains(ride);
+            visited.add(ride);
             start_time = Math.max(current_time + distTwoPoints(ride.getStartPoint(), current_point), ride.getEarliestStart());
             int distance = distTwoPoints(ride.getStartPoint(), ride.getEndPoint());
             end_time = start_time + distance;
