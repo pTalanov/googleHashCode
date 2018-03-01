@@ -1,3 +1,5 @@
+package model
+
 class Model(
         val map: Map,
         val fleetSize: Int,
