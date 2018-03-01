@@ -1,6 +1,6 @@
 package model
 
-class Model(
+data class Model(
         val map: Map,
         val fleetSize: Int,
         val rides: List<Ride>,

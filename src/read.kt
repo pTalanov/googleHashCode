@@ -7,8 +7,9 @@ import model.Ride
 import java.io.File
 
 fun main(args: Array<String>) {
-    val file = File("input.txt")
+    val file = File("data/exampleInput.txt")
     val model = readFromFile(file)
+    println(model)
 }
 
 private fun readFromFile(file: File): Model {
