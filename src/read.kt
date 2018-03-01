@@ -19,7 +19,13 @@ private fun readFromFile(file: File): Model {
 
     val rides = (0 until N).map {
         val (a, b, x, y, s, f) = lines[it.toInt() + 1].toNumbers()
-        Ride(Point(a.toInt(), b.toInt()), Point(x.toInt(), y.toInt()), earliestStart = s, latestFinish = f)
+        Ride(
+                id = it.toInt(),
+                startPoint = Point(a.toInt(), b.toInt()),
+                endPoint = Point(x.toInt(), y.toInt()),
+                earliestStart = s,
+                latestFinish = f
+        )
     }
     return Model(
             map = Map(R.toInt(), C.toInt()),

@@ -11,8 +11,9 @@ data class Model(
 data class Map(val verticalSize: Int, val horizontalSize: Int)
 data class Point(val x: Int, val y: Int)
 data class Ride(
-    val startPoint: Point,
-    val endPoint: Point,
-    val earliestStart: Long,
-    val latestFinish: Long
+        val id: Int,
+        val startPoint: Point,
+        val endPoint: Point,
+        val earliestStart: Long,
+        val latestFinish: Long
 )
