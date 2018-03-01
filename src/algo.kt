@@ -15,6 +15,7 @@ fun algo(model: Model): Submission {
     var currentModel = model
     val assignments = mutableListOf<Assignment>()
     repeat(model.fleetSize) {
+        println("Choosing $it assignment")
         val (newModel, assignment) = chooseAssignment(currentModel)
         assignments.add(assignment)
         currentModel = newModel
@@ -26,6 +27,7 @@ fun chooseAssignment(model: Model): Pair<Model, Assignment> {
     val startNode = Node(State(Point(0, 0), 0), emptyList())
     var node = startNode
     while (true) {
+        println("Choosing next ride")
         node = step(model, node) ?: break
     }
     val newModel = model.copy(rides = model.rides - node.takenRides)
@@ -34,27 +36,36 @@ fun chooseAssignment(model: Model): Pair<Model, Assignment> {
 
 fun step(model: Model, inputNode: Node): Node? {
 
-    fun Node.f(): List<Node> {
+    fun Node.f(): List<Node>? {
         val rides = model.rides
-        val sortedRides = rides.sortedBy { it.earliestStart + distance(it.startPoint, state.location) }
+        val filtered = rides.filter {
+            val distanceToStart = distance(it.startPoint, state.location)
+            val dist = distance(it.startPoint, it.endPoint)
+            val latestStart = it.latestFinish - dist
+            latestStart >= distanceToStart + this.state.time
+        }
+        if (filtered.isEmpty()) return null
 
-        return sortedRides.take(RIDES_CONSIDERED).map {
-            Node(this.state.takeRide(it), this.takenRides + it)
+        return filtered.take(RIDES_CONSIDERED).map { ride ->
+            this.takeRide(ride)
         }
     }
 
     var nodes = listOf(inputNode)
+    if (inputNode.f() == null) return null
+
     repeat(DEPTH) {
-        nodes = nodes.flatMap { it.f() }
+        println("Repeating $it")
+        nodes = nodes.flatMap {
+            it.f() ?: listOf(it)
+        }
     }
-    val bestNode = nodes.maxBy { it.takenRides.reward() } ?: return null
+    val bestNode = nodes.maxBy { it.takenRides.reward(model.perRideBonus) } ?: return null
     val chosenRide = bestNode.takenRides.first()
     return inputNode.takeRide(chosenRide)
 }
 
-private fun List<Ride>.reward(): Int {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-}
+private fun List<Ride>.reward(bonus: Int) = Evaluation.Evaluation.reward(bonus, this)
 
 
 data class Node(val state: State, val takenRides: List<Ride>)

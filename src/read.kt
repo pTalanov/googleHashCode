@@ -9,7 +9,9 @@ import java.io.File
 fun main(args: Array<String>) {
     val file = File("data/exampleInput.txt")
     val model = readFromFile(file)
-    println(model)
+    val submission = algo.algo(model)
+    println(submission)
+    println(Evaluation.Evaluation.getTotalReward(model.perRideBonus, submission))
 }
 
 private fun readFromFile(file: File): Model {
